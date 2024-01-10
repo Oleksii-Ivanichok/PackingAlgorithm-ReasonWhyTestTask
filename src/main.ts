@@ -103,27 +103,16 @@ class Container {
 
         return placements;
     }
+    calculateFullness(): number {
+        let totalBlockArea = 0;
+        this.occupied.forEach(row => {
+            totalBlockArea += row.filter(cell => cell).length;
+        });
+        const totalArea = this.width * this.height;
+        const emptySpace = totalArea - totalBlockArea;
+        return 1 - (emptySpace / totalArea);
+    }
 }
-
-// Тестування алгоритму
-const blocks = [
-    new Block(53, 98, 1),
-    new Block(53, 98, 2),
-    new Block(119, 90, 3),
-    new Block(58, 85, 4),
-    new Block(97, 84, 5),
-    new Block(62, 89, 6),
-    new Block(92, 63, 7),
-    new Block(35, 83, 8),
-    new Block(30, 93, 9),
-    new Block(21, 101, 10),
-];
-const container = new Container(350, 300);
-
-const blockCoordinates = container.findOptimalPlacement(blocks);
-console.log(blocks);
-
-console.log(blockCoordinates);
 
 
 function generateRandomColor(): string {
@@ -131,7 +120,7 @@ function generateRandomColor(): string {
 }
 
 // Функція для додавання блоків у контейнер
-function addBlocksToContainer() {
+function addBlocksToContainer(blockCoordinates: Coordinate[]) {
     const container = document.getElementById('container');
     const colorMap = new Map<string, string>();
 
@@ -159,4 +148,39 @@ function addBlocksToContainer() {
     });
 }
 
-addBlocksToContainer();
+function updateBlocksDisplay(blocks: Block[]) {
+    const containerWidth = window.innerWidth;
+    const containerHeight = window.innerHeight;
+    const container = new Container(containerWidth, containerHeight);
+    const blockCoordinates = container.findOptimalPlacement(blocks);
+    const containerElement = document.getElementById('container');
+    containerElement!.innerHTML = '';
+    addBlocksToContainer(blockCoordinates);
+
+    const fullness = container.calculateFullness();
+    const fullnessDisplay = document.createElement('div');
+    fullnessDisplay.innerText = `Fullness ${fullness.toFixed(2)}`;
+    fullnessDisplay.classList.add('block');
+    containerElement?.appendChild(fullnessDisplay);
+}
+
+// Тестування алгоритму
+const blocks = [
+    new Block(53, 98, 1),
+    new Block(53, 98, 2),
+    new Block(119, 90, 3),
+    new Block(58, 85, 4),
+    new Block(97, 84, 5),
+    new Block(62, 89, 6),
+    new Block(92, 63, 7),
+    new Block(35, 83, 8),
+    new Block(30, 93, 9),
+    new Block(21, 101, 10),
+];
+
+
+updateBlocksDisplay(blocks);
+
+window.onresize = () => {
+    updateBlocksDisplay(blocks)
+};
