@@ -1,0 +1,2 @@
+let json = [{"width":90,"height":300},{"width":60,"height":115},{"width":120,"height":60},{"width":50,"height":120},{"width":40,"height":20},{"width":120,"height":200},{"width":120,"height":400},{"width":150,"height":100},{"width":120,"height":60}];
+export default json;
